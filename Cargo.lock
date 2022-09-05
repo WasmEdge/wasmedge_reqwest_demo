@@ -109,7 +109,7 @@ dependencies = [
  "http",
  "indexmap",
  "slab",
- "tokio",
+ "tokio 1.19.2",
  "tokio-util",
  "tracing",
 ]
@@ -192,11 +192,11 @@ dependencies = [
  "httpdate",
  "itoa",
  "pin-project-lite",
- "tokio",
+ "tokio 1.19.2",
  "tower-service",
  "tracing",
  "want",
- "wasmedge_wasi_socket",
+ "wasmedge_wasi_socket 0.4.1 (git+https://github.com/MediosZ/wasmedge_wasi_socket.git?branch=tcplistener)",
 ]
 
 [[package]]
@@ -288,7 +288,19 @@ dependencies = [
  "libc",
  "log",
  "wasi",
- "wasmedge_wasi_socket",
+ "wasmedge_wasi_socket 0.4.1 (git+https://github.com/MediosZ/wasmedge_wasi_socket.git?branch=tcplistener)",
+ "windows-sys",
+]
+
+[[package]]
+name = "mio"
+version = "0.8.4"
+source = "git+https://github.com/WasmEdge/mio.git#c365b7c15b26bf1b4ee76b88b830fbb5054fd35b"
+dependencies = [
+ "libc",
+ "log",
+ "wasi",
+ "wasmedge_wasi_socket 0.4.1 (git+https://github.com/second-state/wasmedge_wasi_socket.git)",
  "windows-sys",
 ]
 
@@ -358,7 +370,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_urlencoded",
- "tokio",
+ "tokio 1.19.2",
  "tower-service",
  "url",
  "wasm-bindgen",
@@ -412,6 +424,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "socket2"
+version = "0.4.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "02e2d2db9033d13a1567121ddd7a095ee144db4e1ca1b1bda3419bc0da294ebd"
+dependencies = [
+ "libc",
+ "winapi",
+]
+
+[[package]]
 name = "syn"
 version = "1.0.99"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -445,18 +467,33 @@ dependencies = [
  "bytes",
  "libc",
  "memchr",
- "mio",
+ "mio 0.8.3",
  "once_cell",
  "pin-project-lite",
+ "wasmedge_wasi_socket 0.4.1 (git+https://github.com/MediosZ/wasmedge_wasi_socket.git?branch=tcplistener)",
+ "winapi",
+]
+
+[[package]]
+name = "tokio"
+version = "1.21.0"
+source = "git+https://github.com/WasmEdge/tokio.git#4f2e423d49df2e007a64d18649856af5e0f7428c"
+dependencies = [
+ "autocfg",
+ "libc",
+ "mio 0.8.4",
+ "once_cell",
+ "pin-project-lite",
+ "socket2",
  "tokio-macros",
- "wasmedge_wasi_socket",
+ "wasmedge_wasi_socket 0.4.1 (git+https://github.com/second-state/wasmedge_wasi_socket.git)",
  "winapi",
 ]
 
 [[package]]
 name = "tokio-macros"
 version = "1.8.0"
-source = "git+https://github.com/WasmEdge/tokio.git?branch=wasmedge#29b45dce3a2d16b6e894806bc43bc45acbfd5ba4"
+source = "git+https://github.com/WasmEdge/tokio.git#4f2e423d49df2e007a64d18649856af5e0f7428c"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -472,7 +509,7 @@ dependencies = [
  "futures-core",
  "futures-sink",
  "pin-project-lite",
- "tokio",
+ "tokio 1.19.2",
  "tracing",
 ]
 
@@ -628,13 +665,21 @@ name = "wasmedge_reqwest_demo"
 version = "0.1.0"
 dependencies = [
  "reqwest",
- "tokio",
+ "tokio 1.21.0",
 ]
 
 [[package]]
 name = "wasmedge_wasi_socket"
 version = "0.4.1"
 source = "git+https://github.com/MediosZ/wasmedge_wasi_socket.git?branch=tcplistener#88f979baf72fc7c20e2b2b9dc0c0c729ed1b0fae"
+dependencies = [
+ "libc",
+]
+
+[[package]]
+name = "wasmedge_wasi_socket"
+version = "0.4.1"
+source = "git+https://github.com/second-state/wasmedge_wasi_socket.git#b25fdb9ed774f0e520d30ee05d5b8a5c5e0fa05c"
 dependencies = [
  "libc",
 ]
