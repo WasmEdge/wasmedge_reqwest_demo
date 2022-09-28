@@ -1,6 +1,6 @@
 # WasmEdge Reqwest Demo
 
-In this project, we demonstrate how to use **reqwest** and **tokio** to build async http client in WebAssembly and execute it using [WasmEdge]().
+In this project, we demonstrate how to use **reqwest** and **tokio** to build async http client in WebAssembly and execute it using [WasmEdge](https://github.com/WasmEdge/WasmEdge#readme).
 
 ## Why tokio in WasmEdge?
 
@@ -48,13 +48,13 @@ We need to add some code into `src/main.rs`.
 First we need to compile the code.
 
 ```bash 
-cargo build --target wasm32-wasi
+cargo build --target wasm32-wasi --release
 ```
 
 Then we can run it using WasmEdge.
 
 ```bash
-wasmedge target/wasm32-wasi/debug/wasmedge_reqwest_demo.wasm
+wasmedge target/wasm32-wasi/release/wasmedge_reqwest_demo.wasm
 ```
 
 For simpilicity, we can add the following configs to `.cargo/config.toml`.

@@ -1,7 +1,7 @@
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), reqwest::Error> {
     // Some simple CLI args requirements...
-    let url = "http://127.0.0.1:3000";
+    let url = "http://eu.httpbin.org/get?msg=WasmEdge";
 
     eprintln!("Fetching {:?}...", url);
 
@@ -11,27 +11,27 @@ async fn main() -> Result<(), reqwest::Error> {
     eprintln!("Headers: {:#?}\n", res.headers());
 
     let body = res.text().await?;
-    println!("Getting: {}", body);
+    println!("GET: {}", body);
 
     let client = reqwest::Client::new();
 
     let res = client
-        .post("http://127.0.0.1:3000/echo")
-        .body("Hello server.")
+        .post("http://eu.httpbin.org/post")
+        .body("msg=WasmEdge")
         .send()
         .await?;
     let body = res.text().await?;
 
-    println!("echo: {}", body);
+    println!("POST: {}", body);
 
     let res = client
-        .post("http://127.0.0.1:3000/echo/reversed")
-        .body("Hello server.")
+        .put("http://eu.httpbin.org/put")
+        .body("msg=WasmEdge")
         .send()
         .await?;
     let body = res.text().await?;
 
-    println!("echo reversed: {}", body);
+    println!("PUT: {}", body);
 
     Ok(())
 }
