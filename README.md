@@ -35,8 +35,8 @@ In this project, we add tokio and reqwest as dependencies.
 
 ```toml
 [dependencies]
-reqwest = {git = "https://github.com/MediosZ/reqwest.git", branch = "wasmedge"}
-tokio = { git="https://github.com/WasmEdge/tokio.git", branch = "wasmedge", features=["rt", "macros", "net", "time"]}
+reqwest_wasi = "0.11"
+tokio_wasi = { version = "1.21", features=["rt", "macros", "net", "time"]}
 ```
 
 ## Write the code 
