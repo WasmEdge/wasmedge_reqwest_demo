@@ -5,4 +5,4 @@ edition = "2021"
 
 [dependencies]
 reqwest_wasi = "0.11"
-tokio_wasi = { version = "1.21", features = ["rt", "macros", "net", "time"]}
+tokio_wasi = { version = "1", features = ["rt", "macros", "net", "time"]}
