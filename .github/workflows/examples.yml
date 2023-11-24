@@ -34,13 +34,23 @@ jobs:
     - name: Install WasmEdge
       run: |
         VERSION=0.13.5
-        curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install.sh | sudo bash -s -- --version=$VERSION -p /usr/local
-    
+        curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install.sh | sudo bash -s -- --version=$VERSION --plugins=wasmedge_rustls -p /usr/local
+
     - name: Client example
       run: |
         cargo build --target wasm32-wasi --release
-        wasmedgec target/wasm32-wasi/release/wasmedge_reqwest_demo.wasm wasmedge_reqwest_demo.wasm
-        resp=$(wasmedge wasmedge_reqwest_demo.wasm 2>&1)
+        wasmedgec target/wasm32-wasi/release/http.wasm http.wasm
+        wasmedgec target/wasm32-wasi/release/https.wasm https.wasm
+        resp=$(wasmedge http.wasm 2>&1)
+        echo "$resp"
+        if [[ $resp == *"WasmEdge"* ]]; then
+          echo -e "Execution Success!"
+        else
+          echo -e "Execution Fail!"
+          exit 1
+        fi
+
+        resp=$(wasmedge https.wasm 2>&1)
         echo "$resp"
         if [[ $resp == *"WasmEdge"* ]]; then
           echo -e "Execution Success!"
