@@ -31,12 +31,18 @@ curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/insta
 
 ## Add dependencies in **Cargo.toml**
 
-In this project, we add tokio and reqwest as dependencies.
+In this project, we add `tokio` and `reqwest` as dependencies. You will need to add `wasi` specific patches to make those crates compile to Wasm.
 
 ```toml
+[patch.crates-io]
+tokio = { git = "https://github.com/second-state/wasi_tokio.git", branch = "v1.36.x" }
+socket2 = { git = "https://github.com/second-state/socket2.git", branch = "v0.5.x" }
+hyper = { git = "https://github.com/second-state/wasi_hyper.git", branch = "v0.14.x" }
+reqwest = { git = "https://github.com/second-state/wasi_reqwest.git", branch = "0.11.x" }
+
 [dependencies]
-reqwest_wasi = "0.11"
-tokio_wasi = { version = "1.21", features=["rt", "macros", "net", "time"]}
+reqwest = { version = "0.11", default-features = false, features = ["rustls-tls"] }
+tokio = { version = "1", features = ["rt", "macros", "net", "time"] }
 ```
 
 ## Write the code 
@@ -45,10 +51,10 @@ We need to add some code into `src/main.rs`.
 
 ## Build and run it
 
-First we need to compile the code.
+First we need to compile the code. You will need to pass some flags to make sure that the Rust compiler knows to use the correct patches for the `wasmedge` target.
 
 ```bash 
-cargo build --target wasm32-wasi --release
+RUSTFLAGS="--cfg wasmedge --cfg tokio_unstable" cargo build --target wasm32-wasi --release
 ```
 
 Then we can run it using WasmEdge.
@@ -62,12 +68,13 @@ For simpilicity, we can add the following configs to `.cargo/config.toml`.
 ```toml
 [build]
 target="wasm32-wasi"
+rustflags = ["--cfg", "wasmedge", "--cfg", "tokio_unstable"]
 
 [target.wasm32-wasi]
 runner = "wasmedge"
 ```
 
-And then we can use `cargo run` to execute it directly.
+And then we can use `cargo build` and `cargo run`.
 
 # FAQ
 
