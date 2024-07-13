@@ -51,6 +51,29 @@ We need to add some code into `src/main.rs`.
 
 ## Build and run it
 
+<details>
+
+<summary> Note on Mac </summary>
+
+> `ring v0.17` can't build on Mac with default clang.
+> So, you need install wasi-sdk.
+
+### [Download wasi-sdk](https://github.com/WebAssembly/wasi-sdk?tab=readme-ov-file#install)
+```
+export WASI_VERSION=22
+export WASI_VERSION_FULL=${WASI_VERSION}.0
+wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_VERSION}/wasi-sdk-${WASI_VERSION_FULL}-macos.tar.gz
+tar xvf wasi-sdk-${WASI_VERSION_FULL}-macos.tar.gz
+```
+
+### [Use the clang included in wasi-sdk for compilation.](https://github.com/WebAssembly/wasi-sdk?tab=readme-ov-file#use)
+```
+export WASI_SDK_PATH=`pwd`/wasi-sdk-${WASI_VERSION_FULL}
+export CC="${WASI_SDK_PATH}/bin/clang --sysroot=${WASI_SDK_PATH}/share/wasi-sysroot"
+```
+
+</details>
+
 First we need to compile the code. You will need to pass some flags to make sure that the Rust compiler knows to use the correct patches for the `wasmedge` target.
 
 ```bash 
