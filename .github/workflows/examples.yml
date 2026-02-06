@@ -127,7 +127,7 @@ jobs:
         LATEST_TAG=$(curl -s https://api.github.com/repos/WasmEdge/WasmEdge/releases/latest | python -c "import sys,json; print(json.load(sys.stdin)['tag_name'])")
         curl -sL "https://github.com/WasmEdge/WasmEdge/releases/download/${LATEST_TAG}/WasmEdge-${LATEST_TAG}-windows.zip" -o wasmedge.zip
         unzip -q wasmedge.zip -d "$HOME/wasmedge"
-        echo "$HOME/wasmedge/WasmEdge-${LATEST_TAG}-Windows/bin" >> $GITHUB_PATH
+        echo "$HOME/wasmedge/bin" >> $GITHUB_PATH
 
     - name: Client example
       shell: bash
