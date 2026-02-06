@@ -12,19 +12,16 @@ if ! command -v rustup &> /dev/null; then
     echo "  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
     exit 1
 fi
+echo "Updating to latest stable Rust..."
+rustup update stable
+rustup target add wasm32-wasip1
 echo "rustc: $(rustc --version)"
 echo "cargo: $(cargo --version)"
 
-if ! rustup target list --installed | grep -q wasm32-wasip1; then
-    echo "Installing wasm32-wasip1 target..."
-    rustup target add wasm32-wasip1
-fi
-echo "wasm32-wasip1 target: installed"
-
 if ! command -v wasmedge &> /dev/null; then
-    echo "ERROR: wasmedge not found. Install WasmEdge first:"
-    echo "  curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install.sh | bash -s -- --version=0.14.1 --plugins=wasmedge_rustls"
-    exit 1
+    echo "WasmEdge not found. Installing latest WasmEdge..."
+    curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install.sh | bash
+    source "$HOME/.wasmedge/env"
 fi
 echo "wasmedge: $(wasmedge --version)"
 
