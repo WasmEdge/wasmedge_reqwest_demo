@@ -13,8 +13,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-
+  linux:
     runs-on: ubuntu-22.04
 
     steps:
@@ -51,6 +50,99 @@ jobs:
         fi
 
         resp=$(wasmedge https.wasm 2>&1) || true
+        echo "$resp"
+        if [[ $resp == *"WasmEdge"* ]]; then
+          echo -e "Execution Success!"
+        else
+          echo -e "Execution Fail!"
+          exit 1
+        fi
+
+  macos:
+    runs-on: macos-14
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install latest Rust and wasm target
+      run: |
+        rustup update stable
+        rustup target add wasm32-wasip1
+
+    - name: Install wasi-sdk
+      run: |
+        WASI_SDK_VERSION=25
+        curl -sL https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_SDK_VERSION}/wasi-sdk-${WASI_SDK_VERSION}.0-arm64-macos.tar.gz | tar xz
+        echo "WASI_SDK_PATH=$(pwd)/wasi-sdk-${WASI_SDK_VERSION}.0-arm64-macos" >> $GITHUB_ENV
+        echo "CC_wasm32_wasip1=$(pwd)/wasi-sdk-${WASI_SDK_VERSION}.0-arm64-macos/bin/clang" >> $GITHUB_ENV
+
+    - name: Install latest WasmEdge
+      run: |
+        curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install.sh | bash
+        echo "$HOME/.wasmedge/bin" >> $GITHUB_PATH
+
+    - name: Client example
+      run: |
+        cargo build --target wasm32-wasip1 --release
+        resp=$(wasmedge target/wasm32-wasip1/release/http.wasm 2>&1) || true
+        echo "$resp"
+        if [[ $resp == *"WasmEdge"* ]]; then
+          echo -e "Execution Success!"
+        else
+          echo -e "Execution Fail!"
+          exit 1
+        fi
+
+        resp=$(wasmedge target/wasm32-wasip1/release/https.wasm 2>&1) || true
+        echo "$resp"
+        if [[ $resp == *"WasmEdge"* ]]; then
+          echo -e "Execution Success!"
+        else
+          echo -e "Execution Fail!"
+          exit 1
+        fi
+
+  windows:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install latest Rust and wasm target
+      run: |
+        rustup update stable
+        rustup target add wasm32-wasip1
+
+    - name: Install wasi-sdk
+      shell: bash
+      run: |
+        WASI_SDK_VERSION=25
+        curl -sL https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_SDK_VERSION}/wasi-sdk-${WASI_SDK_VERSION}.0-x86_64-windows.tar.gz | tar xz
+        echo "WASI_SDK_PATH=$(pwd)/wasi-sdk-${WASI_SDK_VERSION}.0-x86_64-windows" >> $GITHUB_ENV
+        echo "CC_wasm32_wasip1=$(pwd)/wasi-sdk-${WASI_SDK_VERSION}.0-x86_64-windows/bin/clang.exe" >> $GITHUB_ENV
+
+    - name: Install latest WasmEdge
+      shell: bash
+      run: |
+        LATEST_TAG=$(curl -s https://api.github.com/repos/WasmEdge/WasmEdge/releases/latest | python -c "import sys,json; print(json.load(sys.stdin)['tag_name'])")
+        curl -sL "https://github.com/WasmEdge/WasmEdge/releases/download/${LATEST_TAG}/WasmEdge-${LATEST_TAG}-windows.zip" -o wasmedge.zip
+        unzip -q wasmedge.zip -d "$HOME/wasmedge"
+        echo "$HOME/wasmedge/WasmEdge-${LATEST_TAG}-Windows/bin" >> $GITHUB_PATH
+
+    - name: Client example
+      shell: bash
+      run: |
+        cargo build --target wasm32-wasip1 --release
+        resp=$(wasmedge target/wasm32-wasip1/release/http.wasm 2>&1) || true
+        echo "$resp"
+        if [[ $resp == *"WasmEdge"* ]]; then
+          echo -e "Execution Success!"
+        else
+          echo -e "Execution Fail!"
+          exit 1
+        fi
+
+        resp=$(wasmedge target/wasm32-wasip1/release/https.wasm 2>&1) || true
         echo "$resp"
         if [[ $resp == *"WasmEdge"* ]]; then
           echo -e "Execution Success!"
